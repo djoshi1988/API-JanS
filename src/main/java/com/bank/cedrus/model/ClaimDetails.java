@@ -1,5 +1,6 @@
 package com.bank.cedrus.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -7,7 +8,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Digits;
@@ -22,7 +22,7 @@ import javax.validation.constraints.Size;
 
 @Entity
 @Table(name = "pmjy_claim_details")
-public class ClaimDetails {
+public class ClaimDetails implements Serializable{
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -293,8 +293,7 @@ public class ClaimDetails {
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
     private String dateOfLodgingClaim;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "claim_id", referencedColumnName = "claimReferenceId")
+    @OneToMany(mappedBy = "claimDetails", cascade = CascadeType.ALL)
     private List<Document> documentList;
 
 	public Long getId() {

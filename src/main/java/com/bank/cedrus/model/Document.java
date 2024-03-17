@@ -10,6 +10,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 @Entity
@@ -21,7 +22,7 @@ public class Document {
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "claim_id")
+    @JoinColumn(name = "claimReferenceId", referencedColumnName = "claimReferenceId")
     private ClaimDetails claimDetails;
 
     @NotBlank(message = "Document Type is required")
@@ -31,12 +32,12 @@ public class Document {
     @Pattern(regexp = "^(pdf)$", message = "Content Type must be pdf")
     private String contentType;
 
-    @NotBlank(message = "Document Id is required")
+    @NotNull(message = "Document Id is required")
     private Long documentId;
 
     @NotBlank(message = "Document byte is required")
     @Lob
-    private byte[] document;
+    private String document;
 
 	public Long getId() {
 		return id;
@@ -70,11 +71,11 @@ public class Document {
 		this.documentId = documentId;
 	}
 
-	public byte[] getDocument() {
+	public String getDocument() {
 		return document;
 	}
 
-	public void setDocument(byte[] document) {
+	public void setDocument(String document) {
 		this.document = document;
 	}
     
