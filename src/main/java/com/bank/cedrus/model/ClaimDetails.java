@@ -293,6 +293,7 @@ public class ClaimDetails implements Serializable{
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
     private String dateOfLodgingClaim;
 
+    @NotNull(message = "Document List is required")
     @OneToMany(mappedBy = "claimDetails", cascade = CascadeType.ALL)
     private List<Document> documentList;
 
