@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.bank.cedrus.model.ClaimDetails;
 import com.bank.cedrus.repository.ClaimDetailsRepository;
-import com.bank.cedrus.repository.DocumentsRepository;
 
 @Service
 public class ClaimDetailsService {

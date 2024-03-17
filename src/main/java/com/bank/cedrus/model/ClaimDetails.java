@@ -19,6 +19,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.bank.cedrus.enums.Scheme;
+import com.bank.cedrus.validator.EnumValue;
+
 
 @Entity
 @Table(name = "pmjy_claim_details")
@@ -42,7 +45,7 @@ public class ClaimDetails implements Serializable{
     private String urn;
 
     @NotBlank(message = "Scheme Name is required")
-    @Pattern(regexp = "^(PMJJBY|PMSBY)$", message = "Scheme Name must be PMJJBY or PMSBY")
+    @EnumValue(enumClass = Scheme.class, message = "Scheme Name must be one of: {values}")
     private String schemeName;
 
     @NotBlank(message = "Customer Account Number is required")
