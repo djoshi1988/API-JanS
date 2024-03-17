@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,9 +20,13 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.bank.cedrus.enums.ClaimantRelationship;
+import com.bank.cedrus.enums.DaysOfWeek;
+import com.bank.cedrus.enums.Gender;
+import com.bank.cedrus.enums.Guardians;
+import com.bank.cedrus.enums.KycDocType;
 import com.bank.cedrus.enums.Scheme;
 import com.bank.cedrus.validator.EnumValue;
-
 
 @Entity
 @Table(name = "pmjy_claim_details")
@@ -32,6 +37,7 @@ public class ClaimDetails implements Serializable{
     private Long id;
 
     @NotNull(message = "Claim Reference ID is required")
+    @Column(name = "claim_reference_id")
     private Long claimReferenceId;
 
     @NotNull(message = "Master Policy Number is required")
@@ -70,7 +76,7 @@ public class ClaimDetails implements Serializable{
     private String dob;
 
     @NotBlank(message = "Gender is required")
-    @Pattern(regexp = "^[MFT]$", message = "Invalid Gender, must be M, F, or T")
+    @EnumValue(enumClass = Gender.class, message = "Invalid Gender, must be : {values}")
     private String gender;
 
     @NotBlank(message = "Insurer Code is required")
@@ -130,7 +136,7 @@ public class ClaimDetails implements Serializable{
 
     @NotBlank(message = "KYC ID 1 is required")
     @Size(min = 1, max = 25, message = "KYC ID 1 must be between 1 and 25 characters")
-    @Pattern(regexp = "(?i)^(AADHAR|PAN|VOTERID|DRIVINGL|PASSPORT|MGNREGA)$", message = "Invalid KYC ID 1")
+    @EnumValue(enumClass = KycDocType.class, message = "Invalid KYC ID 1, must be : {values}")
     private String kycID1;
 
     @NotBlank(message = "KYC ID 1 Number is required")
@@ -198,7 +204,7 @@ public class ClaimDetails implements Serializable{
     private String addressOfGuardian;
 
     @Size(min = 1, max = 50, message = "Relationship of Guardian must be between 1 and 50 characters")
-    @Pattern(regexp = "(?i)^(Husband|Wife|Father|Mother|Son|Daughter|Brother|Sister|Grand father|Grand mother|Grand son|Grand daughter|Mother in law|Father in law|Brother in law|Sister in law|Nephew|Niece|Uncle|Aunt|Others)$", message = "Invalid Relationship of Guardian")
+    @EnumValue(enumClass = Guardians.class, message = "Invalid Relationship of Guardian, must be : {values}")
     private String relationShipOfGuardian;
 
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid Guardian Mobile Number")
@@ -219,7 +225,7 @@ public class ClaimDetails implements Serializable{
     private String claimantDateOfBirth;
 
     @Size(min = 1, max = 50, message = "Relationship of Claimant must be between 1 and 50 characters")
-    @Pattern(regexp = "(?i)^(Husband|Wife|Father|Mother|Son|Daughter|Brother|Sister|Grand father|Grand mother|Grand son|Grand daughter|Mother in law|Father in law|Brother in law|Sister in law|Nephew|Niece|Uncle|Aunt|Others)$", message = "Invalid Relationship of Claimant")
+    @EnumValue(enumClass = ClaimantRelationship.class, message = "Invalid Relationship of Claimant, must be : {values}")
     private String relationshipOfClaimant;
 
     @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid Claimant Mobile Number")
@@ -236,7 +242,7 @@ public class ClaimDetails implements Serializable{
     @Size(min = 1, max = 100, message = "Claimant KYC 1 Number must be between 1 and 100 characters")
     private String claimantKYCNumber1;
 
-    @Pattern(regexp = "(?i)^(AADHAR|PAN|VOTERID|DRIVINGL|PASSPORT|MGNREGA)$", message = "Invalid Claimant KYC 2")
+    @EnumValue(enumClass = KycDocType.class, message = "Invalid Claimant KYC 2, must be : {values}")
     private String claimantKYC2;
 
     @Size(min = 1, max = 100, message = "Claimant KYC 2 Number must be between 1 and 100 characters")
@@ -252,7 +258,7 @@ public class ClaimDetails implements Serializable{
     private String timeOfAccident;
 
     @Size(min = 1, max = 25, message = "Day of Accident must be between 1 and 25 characters")
-    @Pattern(regexp = "(?i)^(Sunday|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday)$", message = "Invalid Day of Accident")
+    @EnumValue(enumClass = DaysOfWeek.class, message = "Invalid Day of Accident, must be : {values}")
     private String dayOfAccident;
 
     private String placeOfOccurrence;

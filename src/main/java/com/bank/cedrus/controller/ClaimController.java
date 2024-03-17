@@ -14,7 +14,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.cedrus.model.ClaimDetails;
+import com.bank.cedrus.model.Document;
 import com.bank.cedrus.service.impl.ClaimDetailsService;
+import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
@@ -24,10 +27,14 @@ import com.bank.cedrus.service.impl.ClaimDetailsService;
 public class ClaimController {
 	
     private final ClaimDetailsService claimDetailsService;
+    private final ObjectMapper objectMapper;    
+    
     
     @Autowired
-    public ClaimController(ClaimDetailsService claimDetailsService) {
+    public ClaimController(ClaimDetailsService claimDetailsService, ObjectMapper objectMapper) {
         this.claimDetailsService = claimDetailsService;
+        this.objectMapper = objectMapper;
+        this.objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
      }
 
 
@@ -38,6 +45,10 @@ public class ClaimController {
          if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Validation errors: " + bindingResult.getAllErrors());
         }
+         
+         for (Document document : claimForm.getDocumentList()) {
+             document.setClaimDetails(claimForm);
+         }
 
         claimDetailsService.saveClaimDetails(claimForm);
 

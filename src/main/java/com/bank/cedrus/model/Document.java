@@ -22,7 +22,7 @@ public class Document {
     private Long id;
     
     @ManyToOne
-    @JoinColumn(name = "claimReferenceId", referencedColumnName = "claimReferenceId")
+    @JoinColumn(name = "claim_reference_id", referencedColumnName = "claim_reference_id")
     private ClaimDetails claimDetails;
 
     @NotBlank(message = "Document Type is required")
@@ -77,6 +77,14 @@ public class Document {
 
 	public void setDocument(String document) {
 		this.document = document;
+	}
+
+	public ClaimDetails getClaimDetails() {
+		return claimDetails;
+	}
+
+	public void setClaimDetails(ClaimDetails claimDetails) {
+		this.claimDetails = claimDetails;
 	}
     
     
