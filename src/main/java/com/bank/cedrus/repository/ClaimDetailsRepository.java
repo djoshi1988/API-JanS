@@ -7,5 +7,6 @@ import com.bank.cedrus.model.ClaimDetails;
 
 @Repository
 public interface ClaimDetailsRepository extends JpaRepository<ClaimDetails, Long> {
-    // Additional query methods can be defined here if needed
+ 	boolean existsByClaimReferenceId(long claimReferenceId);
+ 	ClaimDetails findByClaimReferenceId(Long claimReferenceId);
 }

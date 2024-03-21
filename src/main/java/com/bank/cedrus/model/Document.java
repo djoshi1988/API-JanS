@@ -13,6 +13,12 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.bank.cedrus.enums.DocumentType;
+import com.bank.cedrus.validator.EnumValue;
+
+import lombok.Data;
+
+@Data
 @Entity
 @Table(name = "pmjy_claim_documents")
 public class Document {
@@ -33,60 +39,12 @@ public class Document {
     private String contentType;
 
     @NotNull(message = "Document Id is required")
+    @EnumValue(enumClass = DocumentType.class, message = "Invalid document type")
     private Long documentId;
 
     @NotBlank(message = "Document byte is required")
     @Lob
     private String document;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getDocumentType() {
-		return documentType;
-	}
-
-	public void setDocumentType(String documentType) {
-		this.documentType = documentType;
-	}
-
-	public String getContentType() {
-		return contentType;
-	}
-
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
-
-	public Long getDocumentId() {
-		return documentId;
-	}
-
-	public void setDocumentId(Long documentId) {
-		this.documentId = documentId;
-	}
-
-	public String getDocument() {
-		return document;
-	}
-
-	public void setDocument(String document) {
-		this.document = document;
-	}
-
-	public ClaimDetails getClaimDetails() {
-		return claimDetails;
-	}
-
-	public void setClaimDetails(ClaimDetails claimDetails) {
-		this.claimDetails = claimDetails;
-	}
-    
     
 
  }
