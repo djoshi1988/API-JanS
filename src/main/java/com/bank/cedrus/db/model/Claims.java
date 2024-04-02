@@ -1,14 +1,18 @@
-package com.bank.cedrus.model;
+package com.bank.cedrus.db.model;
 
+
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.validation.constraints.Digits;
+import javax.persistence.Table;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -17,7 +21,6 @@ import javax.validation.constraints.Size;
 import com.bank.cedrus.enums.ClaimStatus;
 import com.bank.cedrus.enums.ClaimantRelationship;
 import com.bank.cedrus.enums.DaysOfWeek;
-import com.bank.cedrus.enums.Gender;
 import com.bank.cedrus.enums.Guardians;
 import com.bank.cedrus.enums.KycDocType;
 import com.bank.cedrus.enums.Scheme;
@@ -26,17 +29,17 @@ import com.bank.cedrus.validator.EnumValue;
 import lombok.Data;
 
 @Data
- public class ClaimDetails{
+@Entity
+@Table(name = "pmjy_claim_details")
+public class Claims implements Serializable{
 	
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @NotNull(message = "Claim Reference ID is required")
     @Column(name = "claim_reference_id")
     private Long claimReferenceId;
-
-    @NotNull(message = "Master Policy Number is required")
-    private Long masterPolicyNumber;
-
-    @NotBlank(message = "Token is required")
-    private String token;
 
     @NotBlank(message = "URN is required")
     @Size(min = 31, max = 32, message = "URN must be between 31 and 32 characters")
@@ -50,111 +53,9 @@ import lombok.Data;
     @Size(min = 3, max = 17, message = "Customer Account Number must be between 3 and 17 digits")
     private String customerAccountNumber;
 
-    @NotBlank(message = "Customer Bank Name is required")
-    @Size(min = 2, max = 50, message = "Customer Bank Name must be between 2 and 50 characters")
-    private String customerBankName;
-
-    @NotBlank(message = "Customer IFSC is required")
-    @Pattern(regexp = "^\\w{4}0\\w{6}$", message = "Customer IFSC must be 11 digits with '0' as the 5th character")
-    private String customerIFSC;
-
-    @NotBlank(message = "Account Holder Name is required")
-    @Size(min = 1, max = 300, message = "Account Holder Name must be between 1 and 300 characters")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z .,:'-]*$", message = "Invalid Account Holder Name")
-    private String accountHolderName;
-
     @NotBlank(message = "DOB is required")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid DOB format, use yyyy-MM-dd")
     private String dob;
-
-    @NotBlank(message = "Gender is required")
-    @EnumValue(enumClass = Gender.class, message = "Invalid Gender, must be : {values}")
-    private String gender;
-
-    @NotBlank(message = "Insurer Code is required")
-    @Size(min = 3, max = 17, message = "Insurer Code must be between 3 and 17 characters")
-    private String insurerCode;
-
-    @NotBlank(message = "Bank Code is required")
-    @Size(min = 2, max = 30, message = "Bank Code must be between 2 and 30 characters")
-    private String bankCode;
-
-    @NotBlank(message = "Branch Code is required")
-    @Size(min = 2, max = 30, message = "Branch Code must be between 2 and 30 characters")
-    private String branchCode;
-
-    @NotBlank(message = "Bank Branch Email ID is required")
-    @Email(message = "Invalid Bank Branch Email ID")
-    @Size(min = 5, max = 255, message = "Bank Branch Email ID must be between 5 and 255 characters")
-    private String bankBranchEmailId;
-
-    @NotBlank(message = "Mobile Number is required")
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid Mobile Number")
-    private String mobileNumber;
-    
-    
-    @NotBlank(message = "Email ID is required")
-    @Email(message = "Invalid Email ID")
-    @Size(min = 5, max = 255, message = "Email ID must be between 5 and 255 characters")
-    private String emailId;
-
-    @NotBlank(message = "Address Line 1 is required")
-    @Size(min = 2, max = 500, message = "Address Line 1 must be between 2 and 500 characters")
-    private String addressLine1;
-
-    @Size(min = 2, max = 500, message = "Address Line 2 must be between 2 and 500 characters")
-    private String addressLine2;
-
-    @NotNull(message = "Pincode is required")
-    @Min(value = 100000, message = "Pincode must be at least 6 digits.")
-    @Max(value = 999999, message = "Pincode must be at most 6 digits.")
-    @Digits(integer = 6, fraction = 0, message = "Pincode must contain only digits")
-    private Integer pincode;
-
-    @NotBlank(message = "City is required")
-    @Size(min = 2, max = 200, message = "City must be between 2 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9&.,()\"'-]*$", message = "Invalid City")
-    private String city;
-
-    @NotBlank(message = "District is required")
-    @Size(min = 2, max = 200, message = "District must be between 2 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9&.,()\"'-]*$", message = "Invalid District")
-    private String district;
-
-    @NotBlank(message = "State is required")
-    @Size(min = 2, max = 200, message = "State must be between 2 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z]*$", message = "Invalid State")
-    private String state;
-
-    @NotBlank(message = "KYC ID 1 is required")
-    @Size(min = 1, max = 25, message = "KYC ID 1 must be between 1 and 25 characters")
-    @EnumValue(enumClass = KycDocType.class, message = "Invalid KYC ID 1, must be : {values}")
-    private String kycID1;
-
-    @NotBlank(message = "KYC ID 1 Number is required")
-    @Size(min = 1, max = 100, message = "KYC ID 1 Number must be between 1 and 100 characters")
-    private String kycID1number;
-
-    @Pattern(regexp = "(YES|NO|Y|N)", message = "Pan must be either YES/Y or NO/N")
-    private String pan;
-    
-    @Size(min = 10, max = 10, message = "Pan Number must be exactly 10 characters long")
-    @Pattern(regexp = "[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}", message = "Invalid Pan Number format")
-    private String panNumber;
-    
-    @Pattern(regexp = "(YES|NO|Y|N)", message = "Aadhaar must be either YES/Y or NO/N")
-    private String aadhaar;
-    
-    @Size(min = 12, max = 12, message = "Aadhaar Number must be exactly 12 characters long")
-    @Pattern(regexp = "[0-9]+", message = "Aadhaar Number must contain only digits")
-    private String aadhaarNumber;
-    
-    @Pattern(regexp = "(YES|NO|Y|N)", message = "CKYC must be either YES/Y or NO/N")
-    private String ckyc;
-    
-    @Size(min = 14, max = 15, message = "CKYC Number must be between 14 and 15 characters long")
-    @Pattern(regexp = "[0-9]+", message = "CKYC Number must contain only digits")
-    private String ckycNumber;
     
     @NotBlank(message = "Nominee Name is required")
     @Size(min = 1, max = 300, message = "Nominee Name must be between 1 and 300 characters long")
@@ -205,7 +106,7 @@ import lombok.Data;
     @Email(message = "Invalid Guardian Email ID")
     @Size(min = 5, max = 255, message = "Guardian Email ID must be between 5 and 255 characters")
     private String guardianEmailId;
-
+    
     @Size(min = 1, max = 300, message = "Claimant Name must be between 1 and 300 characters")
     @Pattern(regexp = "^[a-zA-Z .<'>/-]*$", message = "Invalid Claimant Name")
     private String claimantName;
@@ -292,10 +193,7 @@ import lombok.Data;
 
     @NotBlank(message = "Date of Lodging Claim is required")
     @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
-    private String dateOfLodgingClaim;
-
-    @NotNull(message = "Document List is required")
-    private List<Document> documentList;    
+    private String dateOfLodgingClaim; 
     
     @EnumValue(enumClass = ClaimStatus.class, message = "Invalid Claim Status")
     private Long claimStatus;

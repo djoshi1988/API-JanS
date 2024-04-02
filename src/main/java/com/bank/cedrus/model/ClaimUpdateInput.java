@@ -21,8 +21,8 @@ public class ClaimUpdateInput {
     @Size(min = 21, max = 32, message = "Urn must be between 21 and 32 digits")
     private String urn;
 
-    @NotNull(message = "Claim Status is required, must be : {values}")
-    @EnumValue(enumClass = ClaimStatus.class, message = "Invalid Claim Status")
+    @NotNull(message = "Claim Status is required")
+    @EnumValue(enumClass = ClaimStatus.class, message = "Invalid Claim Status, must be : {values}")
     private Long claimStatus;
 
     private String insurerStatus;

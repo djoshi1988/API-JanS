@@ -5,17 +5,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.bank.cedrus.common.EntityMapper;
+import com.bank.cedrus.db.model.Claims;
+import com.bank.cedrus.db.model.Documents;
 import com.bank.cedrus.model.ClaimDetails;
 import com.bank.cedrus.model.ClaimUpdateInput;
 import com.bank.cedrus.model.Document;
-import com.bank.cedrus.repository.ClaimDetailsRepository;
+import com.bank.cedrus.model.NomineeDetails;
+import com.bank.cedrus.repository.ClaimsRepository;
 import com.bank.cedrus.repository.DocumentsRepository;
 
 @Service
 public class ClaimDetailsService {
 
 	 @Autowired
-	 private ClaimDetailsRepository claimRepository;
+	 private ClaimsRepository claimRepository;
 
 	 @Autowired
 	 private DocumentsRepository documentRepository;
@@ -25,19 +29,31 @@ public class ClaimDetailsService {
 	        return claimRepository.existsByClaimReferenceId(claimReferenceId);
 	    }
 	 
-	 public ClaimDetails findByClaimReferenceId(Long claimReferenceId) {
+	 public Claims findByClaimReferenceId(Long claimReferenceId) {
 	        return claimRepository.findByClaimReferenceId(claimReferenceId);
+	    }
+	 
+	 public boolean existsByUrn(String urn) {
+	        return claimRepository.existsByUrn(urn);
+	    }
+	 
+	 public Claims findByUrn(String urn) {
+	        return claimRepository.findByUrn(urn);
 	    }
 	 
 	 @Transactional
 	 public void saveClaimWithDocuments(ClaimDetails claimForm) {		 
 		 
-		for (Document document : claimForm.getDocumentList()) {
-		            document.setClaimDetails(claimForm);
-		            documentRepository.save(document);
-	 	        }
 		
-	    claimRepository.save(claimForm);
+		Claims claimEntity = EntityMapper.mapModelToEntity(claimForm, Claims.class); 
+ 
+		for (Document document : claimForm.getDocumentList()) {
+			Documents documentEntity = EntityMapper.mapModelToEntity(document, Documents.class);
+			documentEntity.setClaim_reference_id(claimForm.getClaimReferenceId());
+			documentRepository.save(documentEntity);
+		}
+		
+	    claimRepository.save(claimEntity);
 		
 
 	    }
@@ -46,8 +62,17 @@ public class ClaimDetailsService {
 	  public void updateClaim(ClaimUpdateInput claimUpdateInput) {
 		  
 	        Long claimReferenceId = claimUpdateInput.getClaimReferenceId();
-	        ClaimDetails existingClaim = claimRepository.findByClaimReferenceId(claimReferenceId);
+	        Claims existingClaim = claimRepository.findByClaimReferenceId(claimReferenceId);
 	        BeanUtils.copyProperties(claimUpdateInput, existingClaim, "claimReferenceId");
  	        claimRepository.save(existingClaim);	         
+	    }
+	  
+	  @Transactional
+	  public void updateNominee(NomineeDetails form) {
+		  
+	        String urn = form.getUrn();
+	        Claims existingClaim = claimRepository.findByUrn(urn);
+	        BeanUtils.copyProperties(form, existingClaim, "urn");
+ 	        claimRepository.save(existingClaim);
 	    }
 }
