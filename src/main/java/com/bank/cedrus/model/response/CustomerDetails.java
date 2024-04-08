@@ -1,4 +1,4 @@
-package com.bank.cedrus.model;
+package com.bank.cedrus.model.response;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -63,24 +63,6 @@ public class CustomerDetails {
     private String consentForautodebit;
     private String ruralUrban;
     
-    
-    public CustomerDetails setFields(List<String> values) {
-        if (values.size() != getClass().getDeclaredFields().length) {
-            throw new IllegalArgumentException("Invalid number of values provided");
-        }
-
-        int index = 0;
-        try {
-            for (java.lang.reflect.Field field : getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                field.set(this, values.get(index++));
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return this;
-    }
 
     
     public  AccountHolder fromCustomerDetails(CustomerDetails customerDetails) {

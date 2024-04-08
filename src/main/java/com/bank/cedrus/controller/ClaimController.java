@@ -15,10 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bank.cedrus.builder.response.ResponseUtils;
-import com.bank.cedrus.model.ClaimDetails;
-import com.bank.cedrus.model.ClaimUpdateInput;
-import com.bank.cedrus.model.NomineeDetails;
+import com.bank.cedrus.exception.ExceptionHandlerUtils;
 import com.bank.cedrus.model.ValidationResult;
+import com.bank.cedrus.model.request.ClaimDetails;
+import com.bank.cedrus.model.request.ClaimUpdateInput;
+import com.bank.cedrus.model.request.NomineeDetails;
 import com.bank.cedrus.service.impl.ClaimDetailsService;
 import com.bank.cedrus.validator.ValidationService;
 
@@ -58,13 +59,9 @@ public class ClaimController {
 			return ResponseEntity.ok(new ResponseUtils().getSuccessResponse(claimForm.getToken()));
 			
 		}
-		catch (ConstraintViolationException e) {
-			String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-	        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), claimForm.getToken()));
-		}
 		catch (Exception e) {
- 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), claimForm != null ? claimForm.getToken() : null));
-		}
+ 		    return ExceptionHandlerUtils.handleException(e, claimForm.getToken());
+ 		}
 
 	}
 	
@@ -92,47 +89,12 @@ public class ClaimController {
 			return ResponseEntity.ok(new ResponseUtils().getSuccessResponse(claimForm.getToken()));
 			
 		}
-		catch (ConstraintViolationException e) {
-			String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-	        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), claimForm.getToken()));
-		}
 		catch (Exception e) {
- 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), claimForm.getToken()));
-		}
+ 		    return ExceptionHandlerUtils.handleException(e, claimForm.getToken());
+ 		}
 	
 	}
 	
-	@PostMapping("/nomineeUpdateStatus")
-	public ResponseEntity<String> nomineeUpdateStatus(@RequestBody String req, @RequestHeader("user-name") String userName,
-			@RequestHeader("api-key") String apiKey) {
-		
-		
-		ValidationResult<NomineeDetails> validationResult = validationService.validateAndMap(req, NomineeDetails.class);
- 	    
- 	    if (validationResult.getErrorMessage() != null) {
-  	        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(validationResult.getErrorMessage(), String.valueOf(HttpStatus.BAD_REQUEST.value()), validationResult.getObject().getToken()));
- 	    }
- 	    
- 	    NomineeDetails form = validationResult.getObject();
-		
-		try {			
- 			
-			if (!claimDetailsService.existsByUrn(form.getUrn())) {
- 	            return ResponseEntity.ok(new ResponseUtils().getErrorResponse("Claim doesnt exists", String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-	        }
-			
-			claimDetailsService.updateNominee(form);
-			return ResponseEntity.ok(new ResponseUtils().getSuccessResponse(form.getToken()));
-			
-		}
-		catch (ConstraintViolationException e) {
-			String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-	        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-		}
-		catch (Exception e) {
- 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), form.getToken()));
-		}
 	
-	}
 
 }

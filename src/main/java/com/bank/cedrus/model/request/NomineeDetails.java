@@ -1,4 +1,7 @@
-package com.bank.cedrus.model;
+package com.bank.cedrus.model.request;
+
+import java.lang.reflect.Field;
+import java.util.StringJoiner;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -65,5 +68,28 @@ public class NomineeDetails {
     @Email(message = "Invalid Guardian Email ID")
     @Size(min = 5, max = 255, message = "Guardian Email ID must be between 5 and 255 characters")
     private String guardianEmailId;
+    
+    
+    public String toFormString() {
+        StringJoiner joiner = new StringJoiner("|");
+        Class<?> clazz = this.getClass();
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+            	 if (!field.getName().equals("token")) {
+                     Object value = field.get(this);
+                     if (value != null) {
+                         joiner.add(value.toString());
+                     } else {
+                         joiner.add(""); 
+                     }
+                 }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+        return joiner.toString();
+    }
 
 }

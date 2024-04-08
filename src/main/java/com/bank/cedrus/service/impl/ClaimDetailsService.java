@@ -8,10 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import com.bank.cedrus.common.EntityMapper;
 import com.bank.cedrus.db.model.Claims;
 import com.bank.cedrus.db.model.Documents;
-import com.bank.cedrus.model.ClaimDetails;
-import com.bank.cedrus.model.ClaimUpdateInput;
-import com.bank.cedrus.model.Document;
-import com.bank.cedrus.model.NomineeDetails;
+import com.bank.cedrus.model.request.ClaimDetails;
+import com.bank.cedrus.model.request.ClaimUpdateInput;
+import com.bank.cedrus.model.request.Document;
+import com.bank.cedrus.model.request.NomineeDetails;
 import com.bank.cedrus.repository.ClaimsRepository;
 import com.bank.cedrus.repository.DocumentsRepository;
 

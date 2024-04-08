@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 
-import com.bank.cedrus.model.Response;
+import com.bank.cedrus.model.response.Response;
 import com.bank.cedrus.service.impl.EncryptionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 

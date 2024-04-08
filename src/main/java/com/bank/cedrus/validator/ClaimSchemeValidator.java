@@ -6,7 +6,7 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 import com.bank.cedrus.enums.Scheme;
-import com.bank.cedrus.model.ClaimDetails;
+import com.bank.cedrus.model.request.ClaimDetails;
 
 public class ClaimSchemeValidator implements ConstraintValidator<ClaimSchemeValidation, ClaimDetails> {
 

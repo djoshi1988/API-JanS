@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.bank.cedrus.model.Applicant;
+import com.bank.cedrus.model.request.Applicant;
 import com.bank.cedrus.repository.ApplicantRepository;
 
 @Service

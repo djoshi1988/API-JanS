@@ -1,10 +1,6 @@
 package com.bank.cedrus.controller;
 
 import java.util.Collections;
-import java.util.stream.Collectors;
-
-import javax.validation.ConstraintViolation;
-import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,18 +12,22 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bank.cedrus.builder.RequestBuilder;
 import com.bank.cedrus.builder.response.ResponseUtils;
+import com.bank.cedrus.common.Constants;
+import com.bank.cedrus.exception.ExceptionHandlerUtils;
 import com.bank.cedrus.iso.ISORequest;
 import com.bank.cedrus.iso.ISOResponse;
-import com.bank.cedrus.model.AccountHolderDetails;
-import com.bank.cedrus.model.Applicant;
-import com.bank.cedrus.model.CustomerDetails;
-import com.bank.cedrus.model.GetCustomerDetails;
-import com.bank.cedrus.model.OTPGeneration;
-import com.bank.cedrus.model.OTPValidation;
-import com.bank.cedrus.model.PhysicalVerification;
-import com.bank.cedrus.model.Response;
 import com.bank.cedrus.model.ValidationResult;
+import com.bank.cedrus.model.request.Applicant;
+import com.bank.cedrus.model.request.GetCustomerDetails;
+import com.bank.cedrus.model.request.OTPGeneration;
+import com.bank.cedrus.model.request.OTPValidation;
+import com.bank.cedrus.model.request.PhysicalVerification;
+import com.bank.cedrus.model.request.PremiumDeduction;
+import com.bank.cedrus.model.response.AccountHolderDetails;
+import com.bank.cedrus.model.response.CustomerDetails;
+import com.bank.cedrus.model.response.Response;
 import com.bank.cedrus.service.impl.ApplicantService;
 import com.bank.cedrus.service.impl.ISOService;
 import com.bank.cedrus.validator.ValidationService;
@@ -51,7 +51,7 @@ public class EnrolmentController {
 		this.applicantService = ApplicantService;
    	}
 
- 	@PostMapping("/triggerOTP")
+ 	@PostMapping("/triggerVerificationCode")
 	public ResponseEntity<String> triggerOTP(@RequestBody String req,
 			BindingResult bindingResult, @RequestHeader("user-name") String userName,
 			@RequestHeader("api-key") String apiKey) {
@@ -67,27 +67,22 @@ public class EnrolmentController {
  	    
 	 	    try
 	 	    {	
-	 	    	ISORequest isoReq= new ISORequest();
-	 	    	isoReq.setField125(form.toFormattedString());
-	 	    	
+
+	 	    	ISORequest isoReq = RequestBuilder.buildISORequest(form,Constants.OTPGeneration,null);
 	 	    	ISOResponse model = isoService.executeISOService(isoReq);	 	    	
 	 	        Response<Object> response = new Response<>(model.getResponseCode(), form.getToken(),null);
 	 	        if (response.isSuccess()) response.setOptionalValue("mobileNumber", model.getValueAtIndex(1));
 				return ResponseEntity.ok(new ResponseUtils().getResponse(response));
 				
 			}
-			catch (ConstraintViolationException e) {
-				String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-		        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-			}
-			
-			catch (Exception e) {
-	 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), form.getToken()));
-			}
+	 	    catch (Exception e) {
+	 		    return ExceptionHandlerUtils.handleException(e, form.getToken());
+	 		}
+
 
 	}
  	
- 	@PostMapping("/verifyOTP")
+ 	@PostMapping("/verifyVerificationCode")
 	public ResponseEntity<String> verifyOTP(@RequestBody String req,
 			BindingResult bindingResult, @RequestHeader("user-name") String userName,
 			@RequestHeader("api-key") String apiKey) {
@@ -103,28 +98,21 @@ public class EnrolmentController {
  	    
 	 	    try
 	 	    {	
-	 	    	ISORequest isoReq= new ISORequest();
-	 	    	isoReq.setField125(form.toFormattedString());
-	 	    	
+	 	    	ISORequest isoReq = RequestBuilder.buildISORequest(form,Constants.OTPValidation,null);
 	 	    	ISOResponse model = isoService.executeISOService(isoReq);	 	    	
 	 	    	Response<Object> response = new Response<>(model.getResponseCode(), form.getToken(),null);
-	 	        if (response.isSuccess()) response.setOptionalValue("accountHolderDetails",Collections.singletonList( new AccountHolderDetails().setFields(model.getData())));
+	 	        if (response.isSuccess()) response.setOptionalValue("accountHolderDetails",Collections.singletonList(Response.setFields(AccountHolderDetails.class,model.getData())));
  	        
 				return ResponseEntity.ok(new ResponseUtils().getResponse(response));
 				
 			}
-			catch (ConstraintViolationException e) {
-				String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-		        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-			}
-			
-			catch (Exception e) {
-	 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), form.getToken()));
-			}
+	 	    catch (Exception e) {
+	 		    return ExceptionHandlerUtils.handleException(e, form.getToken());
+	 		}
 
 	}
  	
- 	@PostMapping("/physicalVerification")
+ 	@PostMapping("/physicalSignatureVerification")
 	public ResponseEntity<String> physicalVerification(@RequestBody String req,
 			BindingResult bindingResult, @RequestHeader("user-name") String userName,
 			@RequestHeader("api-key") String apiKey) {
@@ -140,24 +128,17 @@ public class EnrolmentController {
  	    
 	 	    try
 	 	    {	
-	 	    	ISORequest isoReq= new ISORequest();
-	 	    	isoReq.setField125(form.toFormattedString());
-	 	    	
+	 	    	ISORequest isoReq = RequestBuilder.buildISORequest(form,Constants.PhysicalVerification,null);
 	 	    	ISOResponse model = isoService.executeISOService(isoReq);	 	    	
 	 	    	Response<Object> response = new Response<>(model.getResponseCode(), form.getToken(),null);
-	 	        if (response.isSuccess()) response.setOptionalValue("accountHolderDetails",Collections.singletonList( new AccountHolderDetails().setFields(model.getData())));
+	 	        if (response.isSuccess()) response.setOptionalValue("accountHolderDetails",Collections.singletonList(Response.setFields(AccountHolderDetails.class,model.getData())));
  	        
 				return ResponseEntity.ok(new ResponseUtils().getResponse(response));
 				
 			}
-			catch (ConstraintViolationException e) {
-				String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-		        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-			}
-			
-			catch (Exception e) {
-	 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), form.getToken()));
-			}
+	 	    catch (Exception e) {
+	 		    return ExceptionHandlerUtils.handleException(e, form.getToken());
+	 		}
 
 	} 	
  	
@@ -178,24 +159,17 @@ public class EnrolmentController {
  	    
 	 	    try
 	 	    {	
-	 	    	ISORequest isoReq= new ISORequest();
-	 	    	isoReq.setField125(form.toFormattedString());
-	 	    	
+	 	    	ISORequest isoReq = RequestBuilder.buildISORequest(form,Constants.GetCustomerDetails,null);
 	 	    	ISOResponse model = isoService.executeISOService(isoReq);	 	    	
 	 	    	Response<Object> response = new Response<>(model.getResponseCode(), form.getToken(),null);
-	 	        if (response.isSuccess()) response.setOptionalValue("accountHolderDetails",new CustomerDetails().fromCustomerDetails(new CustomerDetails().setFields(model.getData())));
+	 	        if (response.isSuccess()) response.setOptionalValue("accountHolderDetails",new CustomerDetails().fromCustomerDetails(Response.setFields( CustomerDetails.class,model.getData())));
  	        
 				return ResponseEntity.ok(new ResponseUtils().getResponse(response));
 				
 			}
-			catch (ConstraintViolationException e) {
-				String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-		        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-			}
-			
-			catch (Exception e) {
-	 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), form.getToken()));
-			}
+	 	    catch (Exception e) {
+	 		    return ExceptionHandlerUtils.handleException(e, form.getToken());
+	 		}
 
 	}
  	
@@ -206,13 +180,13 @@ public class EnrolmentController {
 			@RequestHeader("api-key") String apiKey) {
 		
  
- 			ValidationResult<GetCustomerDetails> validationResult = validationService.validateAndMap(req, GetCustomerDetails.class);
+ 			ValidationResult<PremiumDeduction> validationResult = validationService.validateAndMap(req, PremiumDeduction.class);
  	    
  			if (validationResult.getErrorMessage() != null) {
  				return ResponseEntity.ok(new ResponseUtils().getErrorResponse(validationResult.getErrorMessage(), String.valueOf(HttpStatus.BAD_REQUEST.value()), validationResult.getObject().getToken()));
  			}
  			
- 			GetCustomerDetails form = validationResult.getObject();
+ 			PremiumDeduction form = validationResult.getObject();
  	    
 	 	    try
 	 	    {	
@@ -221,19 +195,30 @@ public class EnrolmentController {
 	 	    	
 	 	    	ISOResponse model = isoService.executeISOService(isoReq);	 	    	
 	 	    	Response<Object> response = new Response<>(model.getResponseCode(), form.getToken(),null);
-	 	        if (response.isSuccess()) response.setOptionalValue("accountHolderDetails",new CustomerDetails().fromCustomerDetails(new CustomerDetails().setFields(model.getData())));
- 	        
+	 	    	
+	 	    	if (response.isSuccess()) 
+	 	    	{
+	 	    		String creditAccount= model.getValueAtIndex(1);
+	 	    		isoReq = isoReq.premiumISORequest(isoReq, form, creditAccount);
+	 	    		model = isoService.executeISOService(isoReq);	 	    	
+		 	    	response = new Response<>(model.getResponseCode(), form.getToken(),null);
+		 	    	
+		 	    	if (response.isSuccess()) 
+		 	    	{
+		 	    		isoReq= new ISORequest();
+		 	    		isoReq.setField125(form.toUpdateCustString(creditAccount, model.getValueAtIndex(1)));
+		 	    		model = isoService.executeISOService(isoReq);	 	    	
+			 	    	response = new Response<>(model.getResponseCode(), form.getToken(),null);
+		 	    	}
+	 	    		
+	 	    	}
+	 	    	
 				return ResponseEntity.ok(new ResponseUtils().getResponse(response));
 				
 			}
-			catch (ConstraintViolationException e) {
-				String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-		        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-			}
-			
-			catch (Exception e) {
-	 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), form.getToken()));
-			}
+	 	    catch (Exception e) {
+	 		    return ExceptionHandlerUtils.handleException(e, form.getToken());
+	 		}
 
 	} 	
  	
@@ -263,14 +248,9 @@ public class EnrolmentController {
 				return ResponseEntity.ok(new ResponseUtils().getSuccessResponse(form.getToken()));
 				
 			}
-			catch (ConstraintViolationException e) {
-				String errorMessage = e.getConstraintViolations().stream().map(ConstraintViolation::getMessage).collect(Collectors.joining("; "));	    	
-		        return ResponseEntity.ok(new ResponseUtils().getErrorResponse(errorMessage, String.valueOf(HttpStatus.BAD_REQUEST.value()), form.getToken()));
-			}
-			
-			catch (Exception e) {
-	 			return ResponseEntity.ok(new ResponseUtils().getErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase(), String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR.value()), form.getToken()));
-			}
+	 	    catch (Exception e) {
+	 		    return ExceptionHandlerUtils.handleException(e, form.getToken());
+	 		}
 
 	}
 	

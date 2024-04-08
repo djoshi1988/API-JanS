@@ -29,9 +29,11 @@ public class ISOMsgMapper {
                 if (!Modifier.isStatic(field.getModifiers())) {
                     field.setAccessible(true);
                     Object value = field.get(isoRequest);
-                    int fieldNumber = extractFieldNumber(field.getName());
-                    if (fieldNumber != -1) {
-                        isoMsg.set(fieldNumber, value.toString());
+                    if (value != null && !value.toString().isEmpty()) {
+	                    int fieldNumber = extractFieldNumber(field.getName());
+	                    if (fieldNumber != -1) {
+	                        isoMsg.set(fieldNumber, value.toString());
+	                    }
                     }
                 }
             }

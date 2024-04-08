@@ -1,4 +1,4 @@
-package com.bank.cedrus.model;
+package com.bank.cedrus.model.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;

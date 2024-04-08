@@ -7,7 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
-import com.bank.cedrus.model.Applicant;
+import com.bank.cedrus.model.request.Applicant;
 
 import lombok.Data;
 
