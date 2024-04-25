@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.bank</groupId>
-	<artifactId>pmby</artifactId>
+	<artifactId>jansuraksha</artifactId>
 	<version>0.1</version>
 	<packaging>war</packaging>
 
-	<name>pmby</name>
+	<name>jansuraksha</name>
 	<description>Pradhan Mantri Jeevan Yojana</description>
 
 	<parent>
@@ -103,7 +103,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
-		</dependency>     
+		</dependency>  
+		
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20210307</version> <!-- Adjust version as needed -->
+		</dependency>   
         
     </dependencies>
     
@@ -114,6 +120,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>${project.artifactId}</finalName>
 	</build>
 
 

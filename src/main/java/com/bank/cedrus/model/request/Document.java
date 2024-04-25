@@ -1,12 +1,10 @@
 package com.bank.cedrus.model.request;
 
 
-import javax.persistence.Lob;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import com.bank.cedrus.db.model.Claims;
 import com.bank.cedrus.enums.DocumentType;
 import com.bank.cedrus.validator.EnumValue;
 
@@ -27,8 +25,7 @@ public class Document {
     @EnumValue(enumClass = DocumentType.class, message = "Invalid document type")
     private Long documentId;
 
-    @NotBlank(message = "Document byte is required")
-    @Lob
+    @NotBlank(message = "Document byte is required")     
     private String document;
     
 

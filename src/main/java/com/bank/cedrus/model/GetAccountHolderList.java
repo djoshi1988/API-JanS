@@ -1,4 +1,4 @@
-package com.bank.cedrus.model.response;
+package com.bank.cedrus.model;
 
 import lombok.Data;
 

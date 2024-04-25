@@ -1,15 +1,13 @@
 package com.bank.cedrus.model.response;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.http.HttpStatus;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonUnwrapped;
 
 import lombok.Data;
 
@@ -20,7 +18,9 @@ public class Response<T> {
     private String status;
     private String token;
     private String timeStamp;
-    private Map<String, Optional<T>> optionalValues;
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @JsonUnwrapped
+    T optionalValue;
 
     public Response(String responseCode, String token, String message) {
     	if ("Ok".equalsIgnoreCase(responseCode)) {
@@ -28,33 +28,20 @@ public class Response<T> {
             this.success = true;
             this.status = "200";
         } else {
-            this.message = HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase();
+            this.message = message;
             this.success = false;
             this.status = "400";
         }
+    	this.token = token;
         this.timeStamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-        this.optionalValues = new HashMap<>();
+     
     }
 
-    public void setOptionalValue(String key, T value) {
-        this.optionalValues.put(key, Optional.ofNullable(value));
+    public void setOptionalValue(T optionalValue) {
+        this.optionalValue = optionalValue;
     }
     
-    public void addOptionalValues(T input) {
-        if (input != null) {
-            Class<?> clazz = input.getClass();
-            Field[] fields = clazz.getDeclaredFields();
-            for (Field field : fields) {
-                try {
-                    field.setAccessible(true);
-                    optionalValues.put(field.getName(), Optional.ofNullable((T) field.get(input)));
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-    
+   
     
     public static <T> T setFields(Class<T> clazz, List<String> values) {
         if (values.size() != clazz.getDeclaredFields().length) {
@@ -65,8 +52,34 @@ public class Response<T> {
             T instance = clazz.getDeclaredConstructor().newInstance();
             int index = 0;
             for (java.lang.reflect.Field field : clazz.getDeclaredFields()) {
-                field.setAccessible(true);
-                field.set(instance, values.get(index++));
+                field.setAccessible(true); 
+                String value = values.get(index);
+                if (value == null || value.trim().isEmpty()) {
+                    field.set(instance, null); 
+                } else {
+	                try {
+	                    if (field.getName().equals("dob")) {
+	                        DateTimeFormatter incomingFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+	                        LocalDate date = LocalDate.parse(values.get(index), incomingFormatter);
+	                        DateTimeFormatter outgoingFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	                        field.set(instance, date.format(outgoingFormatter));
+	                    }
+	                    else if(field.getName().equalsIgnoreCase("policyInceptionDate"))
+	                    {
+	                    	DateTimeFormatter incomingFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+	                    	LocalDate date = LocalDate.parse(values.get(index), incomingFormatter);
+	                    	LocalDateTime dateTime = date.atStartOfDay(); // Sets time to midnight
+	                    	DateTimeFormatter outgoingFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	                    	field.set(instance, dateTime.format(outgoingFormatter));
+	                    }                    
+	                    else {
+	                         field.set(instance, values.get(index));
+	                    }
+	                } catch (Exception parseException) {
+	                     field.set(instance, values.get(index));
+	                }
+                }
+                index++;
             }
             return instance;
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {

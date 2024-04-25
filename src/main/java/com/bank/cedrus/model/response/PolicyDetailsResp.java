@@ -3,15 +3,10 @@ package com.bank.cedrus.model.response;
 import lombok.Data;
 
 @Data
-public class GetPolicyDetails {
+public class PolicyDetailsResp {
 
-    private String accountNumber;
     private String accountHolderName;
-    private String cif;
-    private String urn;
-    private String tranDetailsReqdDate;
     private String dob;
-    private String token;
     private String customerIFSC;
     private String gender;
     private String fatherHusbandName;

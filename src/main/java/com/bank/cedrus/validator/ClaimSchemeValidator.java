@@ -96,7 +96,7 @@ public class ClaimSchemeValidator implements ConstraintValidator<ClaimSchemeVali
          }
          
          if (Scheme.PMSBY.equals(claimForm.getSchemeName())) {
-             if (claimForm.getPlaceOfOccurrence() == null) {
+             if (claimForm.getPlaceOfOccurence() == null) {
                  context.disableDefaultConstraintViolation();
                  context.buildConstraintViolationWithTemplate("Place Of Occurrence is mandatory for PMSBY").addConstraintViolation();
                  return false;

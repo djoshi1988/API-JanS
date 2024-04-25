@@ -1,6 +1,9 @@
 package com.bank.cedrus.model.request;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -15,7 +18,6 @@ import lombok.Data;
 public class PremiumDeduction {
 	
     @Size(min = 3, max = 17, message = "Bank Account Number must be between 3 and 17 digits")
-    @Pattern(regexp = "^\\d+$", message = "Invalid Bank Account Number")
     @NotBlank(message = "Account Number is required")
 	private String customerAccountNumber;
     
@@ -37,7 +39,9 @@ public class PremiumDeduction {
     @Size(min = 2, max = 30, message = "Branch Code must be between 2 and 30 characters")
     private String branchCode;
     
-    @NotBlank(message = "Premium Amount is required")
+    @NotNull(message = "Premium Amount is required")
+    @Min(value = 0, message = "Premium Amount must be greater than or equal to 0")
+    @Max(value = Long.MAX_VALUE, message = "Premium Amount must be less than or equal to " + Long.MAX_VALUE)    
     private Double premiumAmount;
     
     @NotBlank(message = "User ID is required")
@@ -56,7 +60,7 @@ public class PremiumDeduction {
     
     
     public String toFormattedString() {
-        return Constants.PMYJAN+"|JANTACC|" + customerAccountNumber + "|" + urn + "|" + cif + "|" + insurerCode + "|" + branchCode + "|" + premiumAmount * 100;
+        return Constants.PMYJAN+"|JANTACC|" + customerAccountNumber + "|" + urn + "|" + cif + "|" + insurerCode + "|" + branchCode + "|" +  ((int) (premiumAmount * 100));
     }
     
     public String toPremiumString() {

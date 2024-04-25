@@ -2,9 +2,6 @@ package com.bank.cedrus.model.request;
 
 import java.util.List;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
@@ -29,7 +26,6 @@ import lombok.Data;
  public class ClaimDetails{
 	
     @NotNull(message = "Claim Reference ID is required")
-    @Column(name = "claim_reference_id")
     private Long claimReferenceId;
 
     @NotNull(message = "Master Policy Number is required")
@@ -253,7 +249,7 @@ import lombok.Data;
     @EnumValue(enumClass = DaysOfWeek.class, message = "Invalid Day of Accident, must be : {values}")
     private String dayOfAccident;
 
-    private String placeOfOccurrence;
+    private String placeOfOccurence;
 
     @Size(min = 1, max = 100, message = "Nature of Accident must be between 1 and 100 characters")
     private String natureOfAccident;

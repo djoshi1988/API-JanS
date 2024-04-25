@@ -1,8 +1,8 @@
-package com.bank.cedrus.model.response;
-
-import java.util.List;
+package com.bank.cedrus.model;
 
 import lombok.Data;
+
+ 
 
 @Data
 public class AccountHolderDetails {
@@ -19,8 +19,7 @@ public class AccountHolderDetails {
 	  
 	  private String PMSBYexists;
 	  
-	  private String KYCUpdated;
-	  
+	  private String KYCUpdated;	  
 	
 
 }

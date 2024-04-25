@@ -35,10 +35,11 @@ public class ISORequest implements Serializable {
     
     public ISORequest premiumISORequest(ISORequest isoReq, PremiumDeduction form, String creditAccount)
     {
+    	String poolingAccount =""+Scheme.PMJJBY == form.getScheme() ? Constants.PMJBY_POOLING_ACCOUNT : Constants.PMSBY_POOLING_ACCOUNT;
     	isoReq.setField125(form.toPremiumString());
  		isoReq.setField3("400000");
- 		isoReq.setField4( String.format("%016.2f", form.getPremiumAmount()*100));
- 		isoReq.setField102("023                " + Scheme.PMJJBY == form.getScheme() ? Constants.PMJBY_POOLING_ACCOUNT : Constants.PMSBY_POOLING_ACCOUNT);
+ 		isoReq.setField4( String.format("%016d", (int) (form.getPremiumAmount() * 100)));
+ 		isoReq.setField102("023                " + poolingAccount);
  		isoReq.setField103(" 023                 "+ creditAccount);
  		isoReq.setField126(null);
  		isoReq.setField127("PSBJAN");    	

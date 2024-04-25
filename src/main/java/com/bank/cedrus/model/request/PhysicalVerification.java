@@ -22,7 +22,7 @@ public class PhysicalVerification {
 	private String dob;
     
     @NotBlank(message = "Sign Verified By Bank is required")
-    @Pattern(regexp = "^YES$", message = "Sign Verified By Bank must be YES")
+    @Pattern(regexp = "(?i)^YES$", message = "Sign Verified By Bank must be YES")
     private String signVerifiedByBank;
     
     @NotBlank(message = "Token is required")

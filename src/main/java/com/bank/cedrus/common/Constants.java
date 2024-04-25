@@ -38,4 +38,12 @@ public class Constants {
     
     public static String NomineeDetails= "JANOMUPSTA";
     
+    public static String Enrolment= "JANPUSHENRL";
+    
+    public static String SubmitClaims= "JANCLMSSUB";
+    
+    public static String UpdateClaims= "JANCLMSUPD";
+    
+    public static String GetCOIDetails= "JANCOIDATA";
+    
 }

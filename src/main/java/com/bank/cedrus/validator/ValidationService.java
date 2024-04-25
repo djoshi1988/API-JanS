@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import com.bank.cedrus.builder.response.ResponseUtils;
 import com.bank.cedrus.model.ValidationResult;
 import com.bank.cedrus.service.impl.EncryptionService;
+import com.bank.cedrus.util.ParameterUtil;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -38,11 +39,19 @@ public class ValidationService {
 	private boolean decryptionEnabled;
 	
 
-    public <T> ValidationResult<T> validateAndMap(String encryptedString, Class<T> clazz)  {
+    public <T> ValidationResult<T> validateAndMap(String encryptedString, Class<T> clazz)  { 
     	
-    	 log.info("Encrypted Request "+ encryptedString);
-         
+    	 log.info("String received "+ encryptedString);
+    	
+    	 encryptedString= ParameterUtil.extractMetadata(encryptedString,decryptionEnabled);
+    	 
+    	 log.info("Metadata "+ encryptedString);
+    	
          String decryptedString = decryptionEnabled ? decrypt(encryptedString) : encryptedString;
+        
+         log.info("DecryptedString "+ decryptedString);
+         
+         
     	 
     	 T object = mapToObject(decryptedString, clazz);
     	 

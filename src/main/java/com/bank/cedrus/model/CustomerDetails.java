@@ -1,9 +1,14 @@
-package com.bank.cedrus.model.response;
+package com.bank.cedrus.model;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.List;
 
 import org.apache.commons.beanutils.BeanUtils;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 
 import lombok.Data;
 
@@ -68,6 +73,7 @@ public class CustomerDetails {
     public  AccountHolder fromCustomerDetails(CustomerDetails customerDetails) {
     	AccountHolder accountHolder = new AccountHolder();
         try {
+//        	customerDetails.setMobileNumber("9718043564");
             BeanUtils.copyProperties(accountHolder, customerDetails);
           } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
@@ -76,43 +82,5 @@ public class CustomerDetails {
     }
 
 
-}
-
-
-@Data
-class AccountHolder {
-    private String cif;
-    private String customerIFSC;
-    private String accountHolderName;
-    private String gender;
-    private String fatherHusbandName;
-    private String dob;
-    private String mobileNumber;
-    private String emailId;
-    private String addressline1;
-    private String addressline2;
-    private String city;
-    private String district;
-    private String state;
-    private String pincode;
-    private String kycID1;
-    private String kycID1number;
-    private String pan;
-    private String panNumber;
-    private String aadhaar;
-    private String aadhaarNumber;
-    private String applicantOccupation;
-    private String nomineeName;
-    private String nomineeDateOfBirth;
-    private String nomineeMobileNumber;
-    private String relationshipOfNominee;
-    private String nomineeEmailId;
-    private String addressofNominee;
-    private String addressofGuardian;
-    private String relationshipOfGuardian;
-    private String guardianMobileNumber;
-    private String guardianEmailId;
-    private String bcReferralId;
-    private String consentForautodebit;
 }
 
