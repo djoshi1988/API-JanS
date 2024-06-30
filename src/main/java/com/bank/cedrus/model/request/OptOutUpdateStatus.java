@@ -24,11 +24,9 @@ public class OptOutUpdateStatus {
 	private String urn;
     
     @NotBlank(message = "Effective date is required")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Effective date must be in yyyy-MM-dd format")
 	private String effectiveDate;
     
     @NotBlank(message = "Request date is required")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Request date must be in yyyy-MM-dd format")
 	private String requestDate;    
 
     @NotBlank(message = "Token is required")

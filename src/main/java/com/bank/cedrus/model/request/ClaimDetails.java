@@ -29,7 +29,7 @@ import lombok.Data;
     private Long claimReferenceId;
 
     @NotNull(message = "Master Policy Number is required")
-    private Long masterPolicyNumber;
+    private String masterPolicyNumber;
 
     @NotBlank(message = "Token is required")
     private String token;
@@ -51,16 +51,13 @@ import lombok.Data;
     private String customerBankName;
 
     @NotBlank(message = "Customer IFSC is required")
-    @Pattern(regexp = "^\\w{4}0\\w{6}$", message = "Customer IFSC must be 11 digits with '0' as the 5th character")
     private String customerIFSC;
 
     @NotBlank(message = "Account Holder Name is required")
     @Size(min = 1, max = 300, message = "Account Holder Name must be between 1 and 300 characters")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z .,:'-]*$", message = "Invalid Account Holder Name")
     private String accountHolderName;
 
     @NotBlank(message = "DOB is required")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid DOB format, use yyyy-MM-dd")
     private String dob;
 
     @NotBlank(message = "Gender is required")
@@ -85,12 +82,10 @@ import lombok.Data;
     private String bankBranchEmailId;
 
     @NotBlank(message = "Mobile Number is required")
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid Mobile Number")
     private String mobileNumber;
     
     
     @NotBlank(message = "Email ID is required")
-    @Email(message = "Invalid Email ID")
     @Size(min = 5, max = 255, message = "Email ID must be between 5 and 255 characters")
     private String emailId;
 
@@ -109,21 +104,17 @@ import lombok.Data;
 
     @NotBlank(message = "City is required")
     @Size(min = 2, max = 200, message = "City must be between 2 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9&.,()\"'-]*$", message = "Invalid City")
     private String city;
 
     @NotBlank(message = "District is required")
     @Size(min = 2, max = 200, message = "District must be between 2 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z0-9&.,()\"'-]*$", message = "Invalid District")
     private String district;
 
     @NotBlank(message = "State is required")
     @Size(min = 2, max = 200, message = "State must be between 2 and 200 characters")
-    @Pattern(regexp = "^[a-zA-Z]*$", message = "Invalid State")
     private String state;
 
     @NotBlank(message = "KYC ID 1 is required")
-    @Size(min = 1, max = 25, message = "KYC ID 1 must be between 1 and 25 characters")
     @EnumValue(enumClass = KycDocType.class, message = "Invalid KYC ID 1, must be : {values}")
     private String kycID1;
 
@@ -135,30 +126,25 @@ import lombok.Data;
     private String pan;
     
     @Size(min = 10, max = 10, message = "Pan Number must be exactly 10 characters long")
-    @Pattern(regexp = "[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}", message = "Invalid Pan Number format")
     private String panNumber;
     
     @Pattern(regexp = "(YES|NO|Y|N)", message = "Aadhaar must be either YES/Y or NO/N")
     private String aadhaar;
     
     @Size(min = 12, max = 12, message = "Aadhaar Number must be exactly 12 characters long")
-    @Pattern(regexp = "[0-9]+", message = "Aadhaar Number must contain only digits")
     private String aadhaarNumber;
     
     @Pattern(regexp = "(YES|NO|Y|N)", message = "CKYC must be either YES/Y or NO/N")
     private String ckyc;
     
     @Size(min = 14, max = 15, message = "CKYC Number must be between 14 and 15 characters long")
-    @Pattern(regexp = "[0-9]+", message = "CKYC Number must contain only digits")
     private String ckycNumber;
     
     @NotBlank(message = "Nominee Name is required")
     @Size(min = 1, max = 300, message = "Nominee Name must be between 1 and 300 characters long")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z .'-<>/]*$", message = "Invalid Nominee Name format")
     private String nomineeName;
     
     @NotBlank(message = "Nominee Date of Birth is required")
-    @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Invalid Date of Birth format, it must be in yyyy-MM-dd")
     private String nomineeDateOfBirth;
     
     @NotBlank(message = "Nominee Gender is required")
@@ -173,7 +159,6 @@ import lombok.Data;
     @Size(min = 1, max = 50, message = "Relationship of Nominee must be between 1 and 50 characters long")
     private String relationshipOfNominee;
     
-    @Pattern(regexp = "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}", message = "Invalid Email format")
     @Size(min = 5, max = 255, message = "Email ID must be between 5 and 255 characters long")
     private String nomineeEmailId;    
     
@@ -181,11 +166,9 @@ import lombok.Data;
     private String addressofNominee;    
 
     @Size(min = 1, max = 300, message = "Correct Nominee Name must be between 1 and 300 characters")
-    @Pattern(regexp = "^[a-zA-Z .<'>/,-]*$", message = "Invalid Correct Nominee Name")
     private String correctNomineeName;
 
     @Size(min = 1, max = 300, message = "Name of Guardian must be between 1 and 300 characters")
-    @Pattern(regexp = "^[a-zA-Z .<'>/-]*$", message = "Invalid Name of Guardian")
     private String nameofGuardian;
 
     @Size(min = 2, max = 500, message = "Address of Guardian must be between 2 and 500 characters")
@@ -195,7 +178,6 @@ import lombok.Data;
     @EnumValue(enumClass = Guardians.class, message = "Invalid Relationship of Guardian, must be : {values}")
     private String relationShipOfGuardian;
 
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid Guardian Mobile Number")
     private String guardianMobileNumber;
 
     @Email(message = "Invalid Guardian Email ID")
@@ -203,7 +185,6 @@ import lombok.Data;
     private String guardianEmailId;
 
     @Size(min = 1, max = 300, message = "Claimant Name must be between 1 and 300 characters")
-    @Pattern(regexp = "^[a-zA-Z .<'>/-]*$", message = "Invalid Claimant Name")
     private String claimantName;
 
     @Size(min = 2, max = 500, message = "Claimant Address must be between 2 and 500 characters")
@@ -216,7 +197,6 @@ import lombok.Data;
     @EnumValue(enumClass = ClaimantRelationship.class, message = "Invalid Relationship of Claimant, must be : {values}")
     private String relationshipOfClaimant;
 
-    @Pattern(regexp = "^[6-9]\\d{9}$", message = "Invalid Claimant Mobile Number")
     private String claimantMobileNumber;
 
     @Email(message = "Invalid Claimant Email ID")
@@ -224,7 +204,6 @@ import lombok.Data;
     private String claimantEmailId;
 
     @Size(min = 1, max = 25, message = "Claimant KYC 1 must be between 1 and 25 characters")
-    @Pattern(regexp = "(?i)^(AADHAR|PAN|VOTERID|DRIVINGL|PASSPORT|MGNREGA)$", message = "Invalid Claimant KYC 1")
     private String claimantKYC1;
 
     @Size(min = 1, max = 100, message = "Claimant KYC 1 Number must be between 1 and 100 characters")
@@ -239,10 +218,8 @@ import lombok.Data;
     @Pattern(regexp = "^(M|F|T)$", message = "Invalid Claimant Gender")
     private String claimantGender;
 
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
     private String dateOfAccident;
 
-    @Pattern(regexp = "^([01]?[0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9]$", message = "Invalid Time Format. Please use HH:mm:ss")
     private String timeOfAccident;
 
     @Size(min = 1, max = 25, message = "Day of Accident must be between 1 and 25 characters")
@@ -271,27 +248,20 @@ import lombok.Data;
     private String claimantBankAccountNumber;
 
     @Size(min = 2, max = 50, message = "Claimant Bank Name must be between 2 and 50 characters")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Invalid Bank Name")
     private String claimantBankName;
 
     @Size(min = 11, max = 11, message = "Claimant Branch IFSC must be 11 characters long")
     @Pattern(regexp = "^\\w{4}0\\w{6}$", message = "Invalid IFSC Code")
     private String claimantBranchIFSC;
 
-    @NotBlank(message = "Premium Debit Date is required")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
     private String premDebitDate;
 
-    @NotBlank(message = "Premium Remit Date is required")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
     private String premRemitDate;
 
-    @NotBlank(message = "Date of Lodging Claim is required")
-    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
     private String dateOfLodgingClaim;
 
     @NotNull(message = "Document List is required")
-    private List<Document> documentList;    
+    private List<Document> documents;    
     
     @EnumValue(enumClass = ClaimStatus.class, message = "Invalid Claim Status")
     private Long claimStatus;

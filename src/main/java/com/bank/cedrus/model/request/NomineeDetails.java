@@ -24,23 +24,19 @@ public class NomineeDetails {
     private String urn;	
     
     @NotBlank(message = "Nominee Update Flag is required")
-    @Pattern(regexp = "(Yes)", message = "Invalid Nominee Update Flag, it must be Yes")
+    @Pattern(regexp = "YES|NO|Y|N|Yes|No", message = "Invalid Nominee Update Flag, it must be Yes")
     private String nomineeUpdateFlag;	
 	
-	@NotBlank(message = "Nominee Name is required")
     @Size(min = 1, max = 300, message = "Nominee Name must be between 1 and 300 characters long")
     @Pattern(regexp = "^[a-zA-Z][a-zA-Z .'-<>/]*$", message = "Invalid Nominee Name format")
     private String nomineeName;
     
-    @NotBlank(message = "Nominee Date of Birth is required")
     @Pattern(regexp = "\\d{4}-\\d{2}-\\d{2}", message = "Invalid Date of Birth format, it must be in yyyy-MM-dd")
     private String nomineeDateOfBirth;
     
-    @NotBlank(message = "Nominee Mobile Number is required")
     @Pattern(regexp = "[6-9][0-9]{9}", message = "Invalid Nominee Mobile Number format")
     private String nomineeMobileNumber;
     
-    @NotBlank(message = "Relationship of Nominee is required")
     @Size(min = 1, max = 50, message = "Relationship of Nominee must be between 1 and 50 characters long")
     private String relationshipOfNominee;
     

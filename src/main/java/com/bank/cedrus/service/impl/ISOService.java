@@ -3,6 +3,7 @@ package com.bank.cedrus.service.impl;
 import java.io.IOException;
 import java.util.stream.IntStream;
 
+import org.jpos.iso.ISOChannel;
 import org.jpos.iso.ISOException;
 import org.jpos.iso.ISOMsg;
 import org.jpos.iso.channel.ASCIIChannel;
@@ -53,6 +54,8 @@ public class ISOService {
             log.info("ISO Message Sent");
             
             isoResponse = receiveResponse(asciiChannel);
+            
+            asciiChannel.disconnect();
             log.info("ISO Response: {}", isoResponse);
         } catch (IOException e) {
             log.error("Error occurred during communication: {}", e.getMessage());
@@ -61,10 +64,10 @@ public class ISOService {
     }
 
     private ASCIIChannel createAndConnectChannel(ISOServiceConfiguration isoServiceConfiguration, ISOMsg isoMsg) throws IOException {
-        ASCIIChannel asciiChannel = new ASCIIChannel(isoServiceConfiguration.getAddress(), isoServiceConfiguration.getPort(), isoMsg.getPackager());
-        asciiChannel.setTimeout(isoServiceConfiguration.getConnectionTimeout());
-        asciiChannel.connect();
-        return asciiChannel;
+        ISOChannel asciiChannel = new ASCIIChannel(isoServiceConfiguration.getAddress(), isoServiceConfiguration.getPort(), isoMsg.getPackager());
+        ((ASCIIChannel) asciiChannel).setTimeout(isoServiceConfiguration.getConnectionTimeout());
+        ((ASCIIChannel) asciiChannel).connect();
+        return (ASCIIChannel) asciiChannel;
     }
 
     private String receiveResponse(ASCIIChannel asciiChannel) throws IOException {

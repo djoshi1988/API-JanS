@@ -20,7 +20,9 @@ import com.bank.cedrus.model.ClaimUpdateModel;
 import com.bank.cedrus.model.ValidationResult;
 import com.bank.cedrus.model.request.ClaimDetails;
 import com.bank.cedrus.model.request.ClaimUpdateInput;
+import com.bank.cedrus.model.request.Document;
 import com.bank.cedrus.model.response.Response;
+import com.bank.cedrus.service.impl.DocumentRepositoryService;
 import com.bank.cedrus.service.impl.ISOService;
 import com.bank.cedrus.validator.ValidationService;
 
@@ -41,6 +43,9 @@ public class ClaimController {
 	
 	@Autowired
     private ExceptionHandlerUtils exceptionHandlerUtils;
+	
+	@Autowired
+	private DocumentRepositoryService documentRepositoryService;
  
 
  	@PostMapping("/pushClaimDetails")
@@ -57,7 +62,12 @@ public class ClaimController {
 		try {	
 			ClaimModel claimModel= new ClaimModel();
 			BeanUtils.copyProperties( form,claimModel);
-			BeanUtils.copyProperties(form.getDocumentList().get(0), claimModel);
+			//BeanUtils.copyProperties(form.getDocuments().get(0), claimModel);
+			
+			for (Document document : form.getDocuments()) {
+				documentRepositoryService.saveDocument(form, document);
+            }
+			
 			ISORequest isoReq = RequestBuilder.buildISORequest(claimModel,Constants.SubmitClaims,null);
 			ISOResponse model = isoService.executeISOService(isoReq);
  	    	Response<Object> response = new Response<>(model.getResponseCode(), form.getToken(),null); 	        

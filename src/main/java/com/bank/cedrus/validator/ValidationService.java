@@ -58,6 +58,17 @@ public class ValidationService {
     	 return validate(object);         
      } 
     
+    
+    public <T> ValidationResult<T> Map(String request, Class<T> clazz)  { 
+    	
+   	 log.info("Request received "+ request);        
+   	 
+   	 T object = mapToObject(request, clazz);
+   	 
+   	 return validate(object);
+   	 
+    } 
+    
     String decrypt(String encryptedString) {        
     	
     	String json = "";

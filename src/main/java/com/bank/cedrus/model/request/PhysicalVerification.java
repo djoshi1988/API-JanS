@@ -18,7 +18,7 @@ public class PhysicalVerification {
     @Size(min = 31, max = 32, message = "URN must be between 31 and 32 characters")
 	private String urn;
     
-    @NotBlank(message = "DOB is required")
+    @Pattern(regexp = "^\\d{4}-\\d{2}-\\d{2}$", message = "Invalid Date Format. Please use yyyy-MM-dd")
 	private String dob;
     
     @NotBlank(message = "Sign Verified By Bank is required")

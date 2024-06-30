@@ -59,4 +59,32 @@ public class ResponseUtils {
 
 	    return jsonResponse;
 	}
+	
+	
+	public String getResponseForOtherChannel(Response<Object> response) {
+	      
+	     String jsonResponse = "";
+	     try {
+			jsonResponse = new ObjectMapper().writeValueAsString(response);
+			log.info("Final Response before Encryption  "+ jsonResponse);
+ 			} catch (Exception e) { 	
+				 log.info("Exception while encrypting  "+ e);
+		 }
+		 
+	     return jsonResponse;
+	}
+	
+	
+	public String  getErrorResponseForOtherChannel(String errorMessage, String statusCode, String requestToken) {
+		Response<Object> response = new Response<>(statusCode, requestToken,errorMessage);
+	    log.info("Error Response "+ response);
+	    String jsonResponse = "";
+ 		try {
+			jsonResponse = new ObjectMapper().writeValueAsString(response);			
+			} catch (Exception e) { 	
+				log.info("Exception while encrypting  "+ e);
+		}
+
+	    return jsonResponse;
+	}
 }
